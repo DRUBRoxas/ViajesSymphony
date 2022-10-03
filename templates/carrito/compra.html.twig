@@ -1,0 +1,29 @@
+{# Plantilla para el envio del correo con la compra #}
+<h1>RESUMEN DE SU COMPRA</h1>
+
+    <table class="table" style="border: 1px solid black">
+        <thead>
+            <tr >
+                <th>Titulo</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+                <th>Descuento</th>
+                <th>Precio con Descuento</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for producto in productos %}
+                    <td>{{ producto.nombre }}</td>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>{{ producto.precio }}</td>
+                    <td>{{ producto.descuento }}</td>
+                    <td>{{ producto.precio - (producto.precio * (producto.descuento / 100 ))|round(2, 'floor') }}$</td>
+
+                </tr>  
+            {% endfor %}  
+        </tbody>
+    <table>
+    <br>
+    <h3>Total {{ precio_final }}€<h3>
+
+</div>

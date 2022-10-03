@@ -1,0 +1,49 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <a class="navbar-brand" href="{{url("index")}}">
+  <IMG src="{{ absolute_url(asset("imagenes/Logo.png")) }}" weight="35px" height="35px"></a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+         <a class="nav-item nav-link" href="{{path("viajes")}}">Viajes</a>
+         <a class="nav-item nav-link" href="{{path("hoteles")}}">Hoteles</a>
+         <a class="nav-item nav-link" href="{{path("actividades")}}">Actividades</a>
+
+    {% if is_granted('ROLE_ADMIN') %}
+
+      <label class="nav-item nav-link">Mantenimiento: </label>
+      <div class="btn-group dropdown">
+        <button type="button" class="btn btn-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Productos
+        </button>
+        <div class="dropdown-menu">
+            <a class="dropdown-item" href="{{path("app_product_index")}}">Listar productos</a>
+            <a class="dropdown-item" href="{{path("app_product_viajes")}}">Listar viajes</a>
+            <a class="dropdown-item" href="{{path("app_product_hoteles")}}">Listar hoteles</a>
+            <a class="dropdown-item" href="{{path("app_product_actividades")}}">Listar Actividades</a>
+            <a class="dropdown-item" href="{{path("app_product_new")}}">Nuevo producto</a>
+        </div>
+      </div>
+    
+    {% endif %}
+    </div>
+  </div>
+  <div class="my-2 my-lg-0">
+        <a href="{{ path('carrito') }}" style="margin-right : 3vh" class="btn btn-info">
+          <i class="fas fa-shopping-cart"></i> Carrito  
+        </a>
+  </div>
+   
+   {#Si el usuario ha iniciado sesion, cambia el contenido por un saludo y un boton de logout#}
+   {% if app.user %}
+      <div class="my-2 my-lg-0">
+          Bienvenido, {{ app.user.name }} {{ app.user.surnames }} <a class="pull-right btn btn-primary" href="{{ path('app_logout') }}">Cerrar Sesión</a>
+      </div>
+      {% endif %}
+      {% if not app.user %}
+      <div class="my-2 my-lg-0">
+        <a class="pull-right btn btn-primary" href="{{ path('app_login') }}">Iniciar Sesión</a>
+      </div>
+      {% endif %}
+</nav>

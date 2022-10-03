@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+
+
+{% block body %}
+    <title>Listado de Productos</title>
+    <h1>Listado de Productos</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id producto</th>
+                <th>Imagen</th>
+                <th>Tipo</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Precio</th>
+                <th>Descuento</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for product in products %}
+            <tr>
+                <td>{{ product.idproduct }}</td>
+                <td><img src="{{asset("imagenes/#{product.imagen}")}}" width="250" height="175"></td>
+                <td>{{ product.tipo }}</td>
+                <td>{{ product.nombre }}</td>
+                <td>{{ product.descripcion }}</td>
+                <td>{{ product.precio }}$</td>
+                <td>{{ product.descuento }}%</td>
+                <td>{{ product.fecha ? product.fecha|date('Y-m-d') : '' }}</td>
+                <td>{{ product.hora ? product.hora|date('H:i:s') : '' }}</td>
+                <td>
+                    <a class="btn btn-outline-primary col" href="{{ path('app_product_show', {'idproduct': product.idproduct}) }}">Detalles</a>
+                    <a class="btn btn-outline-warning col" href="{{ path('app_product_edit', {'idproduct': product.idproduct}) }}">Editar</a>
+                    {{ include('product/_delete_form.html.twig') }}
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="9">No hay ningun registro</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_product_new') }}">Crear nuevo</a>
+{% endblock %}

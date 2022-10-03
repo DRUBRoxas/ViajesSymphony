@@ -1,0 +1,178 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Carrito{% endblock %}
+
+{% block body %}
+
+ <table class="table">
+        <thead>
+            <tr>
+                <th>Id del producto</th>
+                <th>Nombre</th>
+                <th>Descripcion</th>
+                <th>Precio Unidad</th>
+                <th>Descuento</th>
+                <th>Precio Final</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in productos %}
+                <tr id="t{{ product.idproduct }}">
+                    <td>{{ product.idproduct }}</td>
+                    <td>{{ product.nombre }}</td>
+                    <td>{{ product.descripcion }}</td>
+                    <td>{{ product.precio }}</td>
+                    <td>{{ product.descuento }}%</td>
+                    <td>{{product.precio - (product.precio * (product.descuento / 100 ))|round(2, 'floor')}}$</td>
+                    <td><a class="btn btn-danger borra" id="i{{product.getIdproduct}}" >-</a></td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5">Aún no has añadido ningun producto al carrito
+                    <a class="btn btn-info" href="{{ path('index') }}">Volver a la tienda</a>                    
+                    </td>
+
+                </tr>
+            {% endfor %}
+            {% if preciototal == 0 %}
+            {% else %}
+            <tr>
+            <td>Precio Final: {{ preciototal }} </td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+    {# Si el carrito contiene algun item, desplega botones para comprar o Vaciar el Carro #}
+{% if productos != null %}
+  <button type="button" data-toggle="modal" data-target="#modalvaciar" class="btn btn-danger vaciar">Vaciar carrito</button>
+  <button  type="button" data-toggle="modal" data-target="#modalcompra" class="btn btn-info" >Comprar</button>
+
+{# Si el usuario esta registrado, puede acceder al modal de la compra #}
+{% if app.user %}
+  {# Modal comprar #}
+  <div class="modal fade" id="modalcompra" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close cls" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{{path('envcorreo')}}" method="POST">
+          <div class="modal-body">
+            <p>¿Estás seguro de que deseas finalizar la compra?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary cls" data-dismiss="modal">Cerrar</button>
+            <input id="confirmar" type="submit" class="btn btn-info" value="Confirmar compra"/>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% else %}
+  {# Modal Para iniciar sesion si no lo has hecho #}
+  <div class="modal fade" id="modalcompra" data-backdrop="static" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close cls" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <form action="{{path('envcorreo')}}" method="POST">
+          <div class="modal-body">
+            <p>Debes iniciar sesion para comprar. Si no tienes una cuenta, Regístrate.</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary cls" data-dismiss="modal">Cerrar</button>
+            <a class="btn btn-primary" href="{{ path('app_register') }}">Regístrate</a>
+            <a class="btn btn-primary" href="{{ path('app_login') }}">Iniciar Sesión</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{#Modal para vaciar carrito#}
+<div class="modal fade" id="modalvaciar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        ¿Seguro que quieres vaciar el carrito?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+         <a class="btn btn-danger" href="{{ path('clean_carro') }}">Vaciar carrito</a>
+      </div>
+    </div>
+  </div>
+</div>
+ {% endif %}
+<script>
+var $=jQuery;
+$(document).ready(function (){
+    
+  /**para cada boton de la clase compra (el que sube la cantidad) prepara el evento
+  añadiendole la ID para que añada al carro utilizando AJAX
+  */
+    $(".compra").each(function(){
+        $(this).click(function (ev) { 
+            id=ev.target.id;
+            id=id.substr(1);
+            addCarro(id);
+        });
+    });
+  //AJAX que manda la ID del producto para añadir uno más al carrito
+    function addCarro(id)
+    {
+         $.ajax({
+            url: "{{ path('add_carro') }}",
+            "type": "POST",
+            "dataType": 'json',
+            "contentType": 'application/json',
+            "data": JSON.stringify(id)
+        }).done(function (data){
+            console.log(data);
+            location.reload();
+        }).fail(function (data){
+            console.log(data);
+        })
+    }
+  /**para cada boton de la clase borra (el que baja la cantidad) prepara el evento
+  añadiendole la ID para que añada al carro utilizando AJAX
+  */
+    $(".borra").each(function(){
+            $(this).click(function (ev) { 
+            id=ev.target.id;
+            id=id.substr(1);
+                delCarro(id);
+            });
+        });
+ //AJAX que manda la ID del producto para borrar uno del carrito
+        function delCarro(id)
+        {
+            $.ajax({
+                url: "{{ path('delete_carro') }}",
+                "type": "POST",
+                "dataType": 'json',
+                "contentType": 'application/json',
+                "data": JSON.stringify(id)
+            }).done(function (data){
+                console.log(data[id]);
+                location.reload();
+            }).fail(function (data){
+                console.log(data);
+            })
+        }
+});
+</script>
+
+{% endblock %}

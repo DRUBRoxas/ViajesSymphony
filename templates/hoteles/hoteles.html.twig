@@ -1,0 +1,66 @@
+{% extends 'base.html.twig' %}
+{% block body %}
+
+    <title>Hoteles</title>
+    <h1>Lista de hoteles</h1>
+    <div class="container">
+    <div class="row">
+    {% for product in products %}
+        {% if product.tipo == "hoteles" %}
+           <div class="card col-4" style="width: 18rem;">
+                <img class="card-img-top" src="{{asset("imagenes/#{product.Imagen}")}}" alt="{{asset("imagenes/icono Np.png")}}">
+                <div class="card-body">
+                    <h5 class="card-title">{{product.Nombre}}</h5>
+                    <p class="card-text">{{product.Descripcion}}</p>
+                    <p class="card-text">
+                    {% if product.descuento == "0" %}
+                        {{product.precio}}
+                    {% else %}
+                        {{product.precio - (product.precio * (product.descuento / 100 ))|round(2, 'floor')}}$
+                    {% endif %}
+                    </p>
+                    
+                        <a class="btn btn-outline-primary col" href="{{ path('app_product_show', {'idproduct': product.idproduct}) }}">Detalles</a>
+                    {% if is_granted('ROLE_ADMIN') %}
+                        <a class="btn btn-outline-warning col" href="{{ path('app_product_edit', {'idproduct': product.idproduct}) }}">Editar</a>
+                        {{ include('product/_delete_form.html.twig') }}
+                    {% endif %}
+                    <button class="btn btn-outline-info col compra" id="i{{product.getIdproduct}}">Añadir al carrito</button>
+                    
+                    
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        
+        </div>
+
+<script>
+    var $=jQuery;
+    $(document).ready(function (){
+        //a cada boton de compra le mete una funcion que manda un AJAX para comprar un productos
+        $(".compra").each(function(){
+            $(this).click(function (ev) {
+                id=ev.target.id;
+                id=id.substr(1);
+                addCarro(id);
+            });
+        });
+    //Funcion que manda el Ajax
+        function addCarro(id)
+        {
+            $.ajax({
+                url: "{{ path('add_carro') }}",
+                "type": "POST",
+                "dataType": 'json',
+                "contentType": 'application/json',
+                "data": JSON.stringify(id)
+            }).done(function (data){
+                console.log(data);
+            }).fail(function (data){
+                console.log(data);
+            })
+        }
+    });
+</script>
+{% endblock %}
