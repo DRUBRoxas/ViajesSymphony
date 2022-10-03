@@ -102,11 +102,7 @@ directorio_imagenes: '%kernel.project_dir%/public/imagenes'
 * [XAMPP](https://www.apachefriends.org/es/download.html) - Despliegue en local para el desarrollo
 * [Wkhtmltopdf](https://wkhtmltopdf.org/) - Transformación de un texto HTML a un PDF (utilizado para la generación de la factura)
 
-## Versionado 📌
-
-Usamos [Gitlab](https://gitlab.ujaen.es/) para el versionado. Para todas las versiones disponibles, mira los [commits en este repositorio](https://gitlab.ujaen.es/mss00048/TBW2122_6.git).
-
 ## Autores ✒️
 
-* **Manuel Sánchez Salazar** - *Desarrollador* - [mss00048](https://gitlab.ujaen.es/mss00048)
-* **Rafael Aznar Estrada** - *Desarrollador* - [rae00010](https://gitlab.ujaen.es/rae00010)
+* **Manuel Sánchez Salazar** - *Desarrollador* - [DRUBRoxas](https://github.com/DRUBRoxas)
+* **Rafael Aznar Estrada** - *Desarrollador* - [RafaEstrada96](https://github.com/RafaEstrada96)
